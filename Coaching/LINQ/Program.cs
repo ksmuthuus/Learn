@@ -1,5 +1,7 @@
 ﻿using Coaching.LINQ;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Coaching
 {
@@ -7,12 +9,21 @@ namespace Coaching
     {
         static void Main(string[] args)
         {
-            Manufacturer m = new Manufacturer();
-            var result = m.ProcessManufacturers("manufacturers.csv");
+            Car c = new Car();
+            var cars = c.ProcessCars("fuel.csv");
 
-            foreach(var data in result)
+            Manufacturer m = new Manufacturer();
+            var manu = m.ProcessManufacturers("manufacturers.csv");
+
+            var query = from car in cars
+                        where car.Manufacturer == "BMW"
+                        select car;
+
+            var query1 = cars.Where(car => car.Manufacturer == "BMW");
+
+            foreach(var result in query1)
             {
-                Console.WriteLine(data.HeadQuarters);
+                Console.WriteLine(result.Name);
             }
         }
     }
