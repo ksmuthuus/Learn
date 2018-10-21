@@ -13,17 +13,35 @@ namespace Coaching
             var cars = c.ProcessCars("fuel.csv");
 
             Manufacturer m = new Manufacturer();
-            var manu = m.ProcessManufacturers("manufacturers.csv");
+            var manufacturers = m.ProcessManufacturers("manufacturers.csv");
 
             var query = from car in cars
-                        where car.Manufacturer == "BMW"
-                        select car;
+                        join manufacturer in manufacturers
+                        on car.Manufacturer equals manufacturer.Name
+                        //where car.Manufacturer == "BMW" && car.YearModel == 2016
+                        orderby car.Combined descending, car.Name ascending
+                        select new
+                        {
+                            manufacturer.HeadQuarters,
+                            car.Name,
+                            car.Combined
+                        };
 
-            var query1 = cars.Where(car => car.Manufacturer == "BMW");
+            var query1 = cars.Join(manufacturers,
+                                    car => car.Manufacturer,
+                                    manufacturer => manufacturer.Name,
+                                    (car, manufacturer) => new
+                                    {
+                                        manufacturer.HeadQuarters,
+                                        car.Name,
+                                        car.Combined
+                                    })
+                                    .OrderByDescending(car => car.Combined)
+                                    .ThenBy(car => car.Name);
 
-            foreach(var result in query1)
+            foreach(var result in query1.Take(10))
             {
-                Console.WriteLine(result.Name);
+                Console.WriteLine($"{result.HeadQuarters} {result.Name} {result.Combined}");
             }
         }
     }
