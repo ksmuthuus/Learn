@@ -1,0 +1,3 @@
+# EOL - use LF - required for SourceLink
+*.cs eol=lf
+*.fs eol=lf
